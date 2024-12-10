@@ -7,6 +7,9 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+      },
       fontFamily: {
         'Roboto': ["Roboto", 'sans-serif']
       }

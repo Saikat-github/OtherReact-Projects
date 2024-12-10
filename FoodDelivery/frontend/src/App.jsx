@@ -9,6 +9,7 @@ import LoginPopup from './components/loginpopup/LoginPopup'
 import { StoreContext } from './context/context'
 import Verify from './pages/verify/Verify'
 import MyOrders from './pages/myorders/MyOrders'
+import ScrollToTop from './components/scollToTop/ScrollToTop'
 
 const App = () => {
   const {showLogin, setShowLogin} = useContext(StoreContext)
@@ -18,7 +19,8 @@ const App = () => {
     <>
     {showLogin ? <LoginPopup/> : <></>}
       <Navbar/>
-      <div className='w-[80%] mx-auto font-Outfit'>
+      <div className='mx-[10%] font-Outfit'>
+        <ScrollToTop />
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/cart' element={<Cart />} />

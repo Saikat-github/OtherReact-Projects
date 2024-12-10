@@ -1,47 +1,83 @@
-import React, { useContext } from 'react'
-import menu_icon from '../../assets/menu.png'
-import logo from '../../assets/logo.png'
-import search_icon from '../../assets/search.png'
-import upload_icon from '../../assets/upload.png'
-import more_icon from '../../assets/more.png'
-import notification_icon from '../../assets/notification.png'
-import profile_icon from '../../assets/user_profile.jpg'
-import { Link } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import upload_icon from '../../assets/upload2.svg'
+import notification_icon from '../../assets/notification2.svg'
+import profile_icon from '../../assets/usericon2.svg'
+import { Link, useNavigate } from 'react-router-dom'
 import { SetContext } from '../../contexts/setContext'
+import darkTheme from '../../assets/dark.svg'
+import lightTheme from '../../assets/light.svg'
+import notificationLight from '../../assets/notificationlight.svg'
+import userLight from '../../assets/userlight.svg'
+import uploadLight from '../../assets/uploadlight.svg'
+import SearchBar from '../search/SearchBar'
+import authService from '../../appwrite/auth'
+
 
 
 const Navbar = () => {
-  const { setSidebar, themeChanger, themeMode } = useContext(SetContext)
+  const {userData, setUserData, setSidebar, themeChanger, themeMode } = useContext(SetContext)
+  const [showOptions, setShowOptions] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const logoutHanlder = async () => {
+    setLoading(true);
+    try {
+      await authService.logout();
+      setUserData(null)
+      alert("Successfully logged out")
+      navigate("/login")
+    } catch (error) {
+      console.log(error);
+      alert("some error occured, try again!")
+    } finally {
+      setShowOptions(false)
+    }
+    setLoading(false);
+  }
+
   return (
-    <nav className='flex-div flex justify-between shadow-md bg-white sticky top-0 h-16 mb-4 z-10 dark:bg-gray-950 dark:text-white'>
+    <nav className='flex-div flex justify-between shadow-md bg-white sticky top-0 h-16 z-10 dark:bg-black dark:text-white'>
       <div className="nav-left flex items-center md:mr-6 ml-6">
         {/* <img className=' cursor-pointer menu-icon w-6 mr-2 sm:mr-6' src={menu_icon} alt="" onClick={() => setSidebar((prev) => !prev)} /> */}
 
-        <i className={`fa-solid fa-bars dark:text-white w-10 cursor-pointer menu-icon mr-2 sm:mr-6 text-3xl`} onClick={() => setSidebar((prev) => !prev)} ></i>
+        <i className={`fa-solid fa-bars dark:text-white w-8 cursor-pointer menu-icon mr-2 sm:mr-6 text-3xl`} onClick={() => setSidebar((prev) => !prev)} ></i>
 
-        <Link to='/'><img className='cursor-pointer logo w-14 hidden sm:inline' src="/youtubelogo.png" alt="" /></Link>
+        <Link to='/'><img className='cursor-pointer logo w-10 hidden sm:inline' src="/youtubelogo.png" alt="" /></Link>
       </div>
 
       <div className="nav-middle flex items-center">
-        <div className="search-box flex items-center border border-gray-400 
-        mr-4 py-1 px-3 rounded-full dark:border-sky-900 dark:bg-sky-900 dark:bg-opacity-10">
-          <input type="text" placeholder='Search' className='md:w-[400px] w-full border-none outline-none bg-transparent text-sm md:text-lg' />
-          <img src={search_icon} alt="" className='w-4' />
-        </div>
+        {/* <div className="search-box flex items-center border border-gray-400 
+        mr-4 py-2 px-3 rounded-full dark:border-gray-150 dark:bg-transparent">
+          <input type="text" placeholder='Search' className='md:w-[400px] w-full border-none outline-none bg-transparent text-xs md:text-sm' />
+          <img src={search_icon} alt="" className='w-4 cursor-pointer' />
+        </div> */}
+        <SearchBar />
       </div>
 
-      <div className="nav-right flex items-center">
-        <button onClick={themeChanger}>
-          {
-            themeMode === 'light' ? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className='h-6 mr-6 w-8 cursor-pointer'><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z" /></svg>
-              : <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className='h-6 mr-6 w-8 cursor-pointer'><path fill="#eaeef6" d="M375.7 19.7c-1.5-8-6.9-14.7-14.4-17.8s-16.1-2.2-22.8 2.4L256 61.1 173.5 4.2c-6.7-4.6-15.3-5.5-22.8-2.4s-12.9 9.8-14.4 17.8l-18.1 98.5L19.7 136.3c-8 1.5-14.7 6.9-17.8 14.4s-2.2 16.1 2.4 22.8L61.1 256 4.2 338.5c-4.6 6.7-5.5 15.3-2.4 22.8s9.8 13 17.8 14.4l98.5 18.1 18.1 98.5c1.5 8 6.9 14.7 14.4 17.8s16.1 2.2 22.8-2.4L256 450.9l82.5 56.9c6.7 4.6 15.3 5.5 22.8 2.4s12.9-9.8 14.4-17.8l18.1-98.5 98.5-18.1c8-1.5 14.7-6.9 17.8-14.4s2.2-16.1-2.4-22.8L450.9 256l56.9-82.5c4.6-6.7 5.5-15.3 2.4-22.8s-9.8-12.9-17.8-14.4l-98.5-18.1L375.7 19.7zM269.6 110l65.6-45.2 14.4 78.3c1.8 9.8 9.5 17.5 19.3 19.3l78.3 14.4L402 242.4c-5.7 8.2-5.7 19 0 27.2l45.2 65.6-78.3 14.4c-9.8 1.8-17.5 9.5-19.3 19.3l-14.4 78.3L269.6 402c-8.2-5.7-19-5.7-27.2 0l-65.6 45.2-14.4-78.3c-1.8-9.8-9.5-17.5-19.3-19.3L64.8 335.2 110 269.6c5.7-8.2 5.7-19 0-27.2L64.8 176.8l78.3-14.4c9.8-1.8 17.5-9.5 19.3-19.3l14.4-78.3L242.4 110c8.2 5.7 19 5.7 27.2 0zM256 368a112 112 0 1 0 0-224 112 112 0 1 0 0 224zM192 256a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z" /></svg>
-          }
-        </button>
-
-        <img src={upload_icon} alt="" className='mr-6 w-8 cursor-pointer hidden lg:inline' />
-        <img src={more_icon} alt="" className='mr-6 w-8 cursor-pointer hidden md:inline' />
-        <img src={notification_icon} alt="" className='mr-6 w-8 cursor-pointer hidden md:inline' />
-        <img src={profile_icon} alt="" className='user-icon mr-6 w-8 rounded-full cursor-pointer' />
+      <div className="relative nav-right flex items-center gap-6 sm:gap-10 mr-6">
+        <img src={
+          themeMode === 'light' ? darkTheme
+            : lightTheme
+        } className='opacity-80 hover:opacity-100 transition duration-200 w-4 h-6 cursor-pointer' onClick={themeChanger} />
+        <img src={
+          themeMode === 'dark' ? upload_icon
+            : uploadLight
+        } alt="" className={`opacity-80 hover:opacity-100 transition duration-200 w-4 h-6 cursor-pointer  hidden lg:inline`} />
+        <img src={
+          themeMode === 'dark' ? notification_icon
+            : notificationLight
+        } alt="" className={`opacity-80 hover:opacity-100 transition duration-200 w-4 h-6 cursor-pointer  hidden md:inline`} />
+        <img src={
+          themeMode === 'dark' ? profile_icon
+            : userLight
+        } alt="" className={`opacity-80 hover:opacity-100 transition duration-200 w-4 h-6 cursor-pointer  rounded-full`}
+          onClick={() => setShowOptions((prev) => !prev)} />
+        <ul className={`absolute top-4 right-2 text-xs md:text-sm  px-6 py-6 space-y-4 bg-gray-600 text-white rounded-md ${!showOptions && "hidden"}`}>
+          <li onClick={() => { setShowOptions(false); navigate("/login")}} className={`${userData && "hidden"} cursor-pointer border-b-2 border-transparent hover:border-white pb-1`}>Login</li>
+          <li onClick={() => { setShowOptions(false); navigate("/signup")}} className={`${userData && "hidden"} cursor-pointer border-b-2 border-transparent hover:border-white pb-1`}>SignUp</li>
+          <li onClick={logoutHanlder} className={`${!userData && "hidden"} cursor-pointer border-b-2 border-transparent hover:border-white pb-1`}>{loading ? <div className='h-6 w-6 border-4 border-t-gray-600 animate-spin rounded-full'></div> : "Logout"}</li>
+        </ul>
       </div>
     </nav>
   )

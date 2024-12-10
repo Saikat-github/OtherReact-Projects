@@ -15,16 +15,17 @@ const PlayVideo = () => {
     const [apiData, setApiData] = useState(null);
     const [channelData, setChannelData] = useState(null);
     const [commentData, setCommentData] = useState([]);
-    const [showComments, setShowComments] = useState(true);
+    const [showComments, setShowComments] = useState(false);
     const [showDesc, setShowDesc] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const fetchVideoData = useCallback(async () => {
+        setError(null)
         try {
             const videoDetailsUrl = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoId}&key=${ytAPIKey}`;
             const channelDataUrl = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet,contentDetails,statistics&id=${apiData?.snippet?.channelId}&key=${ytAPIKey}`;
-            const commentUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet,replies&maxResults=70&videoId=${videoId}&key=${ytAPIKey}`;
+            const commentUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet,replies&maxResults=50&videoId=${videoId}&key=${ytAPIKey}`;
 
             const [videoResponse, channelResponse, commentResponse] = await Promise.all([
                 fetch(videoDetailsUrl),
@@ -51,11 +52,13 @@ const PlayVideo = () => {
         fetchVideoData();
     }, [fetchVideoData]);
 
+
+
     const toggleDescription = useCallback(() => setShowDesc((prev) => !prev), []);
     const toggleComments = useCallback(() => setShowComments((prev) => !prev), []);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
+    if (loading) return <div className='text-center text-3xl h-screen'>Loading...</div>;
+    if (error) return <p className='text-red-700 text-center my-10'>{error}</p>;
 
     const { snippet, statistics } = apiData || {};
     const { thumbnails, channelTitle, publishedAt, description } = snippet || {};
@@ -68,12 +71,15 @@ const PlayVideo = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
-                className="w-full sm:h-[70vh] h-[40vh] sm:rounded-xl"
+                className="w-full sm:h-[70vh] h-[30vh] sm:rounded-xl"
             ></iframe>
-            <h3 className="mt-3 mx-2 sm:mx-0 font-semibold sm:text-xl text-sm">
+            <h3 className="my-2 mx-2 sm:mx-0 font-semibold sm:text-xl text-sm">
                 {snippet?.title || 'Title Here'}
             </h3>
-            <div className="play-video-info flex items-center sm:justify-between flex-wrap mt-3 text-sm text-gray-600 sm:flex-nowrap">
+            <p className="sm:hidden text-xs text-gray-700 dark:text-stone-400 mx-2">
+                {valueConverter(statistics?.viewCount)} views &bull; {moment(publishedAt).fromNow()}
+            </p>
+            <div className="play-video-info flex items-center sm:justify-between flex-wrap mt-2 text-sm text-gray-600 sm:flex-nowrap">
                 <div className="publisher flex justify-between w-full sm:w-auto mx-2 my-2 sm:mx-0">
                     <div className=" flex gap-2">
                         <img
@@ -91,7 +97,7 @@ const PlayVideo = () => {
                             </span>
                         </div>
                     </div>
-                    <button className="px-2 md:px-4 font-semibold bg-gray-200 rounded-full hover:bg-gray-300 text-black sm:ml-2 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800">
+                    <button className="px-2 md:px-4 font-semibold bg-gray-200 rounded-full hover:bg-gray-300 text-black sm:ml-2 dark:bg-stone-900 dark:text-white dark:hover:bg-stone-800">
                         Subscribe
                     </button>
                 </div>
@@ -104,7 +110,7 @@ const PlayVideo = () => {
                     ].map(({ src, label, alt }, idx) => (
                         <span
                             key={idx}
-                            className="inline-flex items-center sm:px-4 px-2 sm:py-2 py-1 sm:ml-4 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 text-xs sm:text-sm"
+                            className="inline-flex items-center sm:px-4 px-2 sm:py-2 py-1 sm:ml-4 bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer dark:bg-stone-900 dark:text-white dark:hover:bg-stone-800 text-xs sm:text-sm"
                         >
                             <img src={src} className="w-5 mr-2" alt={alt} />
                             {label}
@@ -116,23 +122,25 @@ const PlayVideo = () => {
 
             <div className="description sm:text-sm text-xs sm:mx-0 mx-2">
                 <div className="desc-details mb-2">
-                    <p className="font-semibold text-gray-700 dark:text-white">
+                    <p className="hidden sm:block text-sm text-gray-700 dark:text-stone-400">
                         {valueConverter(statistics?.viewCount)} views &bull; {moment(publishedAt).fromNow()}
                     </p>
-                    <p className="cursor-pointer" onClick={toggleDescription}>
+                    <p className="cursor-pointer text-gray-700 dark:text-stone-400" onClick={toggleDescription}>
                         {showDesc ? 'show less...' : 'more...'}
                     </p>
-                    {showDesc && <p>{description}</p>}
+                    {showDesc && <p className='text-xs dark:text-gray-100'>{description}</p>}
                 </div>
-                <hr />
-                <h4 onClick={toggleComments} className="my-4 sm:text-xl text-sm cursor-pointer">
-                    {valueConverter(statistics?.commentCount)} Comments
-                </h4>
+               
+                <div className='bg-gray-200 dark:bg-stone-900 p-2 rounded-lg'>
+                    <h4 onClick={toggleComments} className="sm:text-lg text-xs cursor-pointer block sm:hidden my-1">
+                        {valueConverter(statistics?.commentCount)} Comments ...
+                    </h4>
 
-                {/* Render comments dynamically */}
-                {showComments && commentData?.map((item, idx) => (
-                    <Comment key={idx} item={item} />
-                ))}
+                    {/* Render comments dynamically */}
+                    {showComments && commentData?.map((item, idx) => (
+                        <Comment key={idx} item={item} />
+                    ))}
+                </div>
             </div>
         </div>
     );
@@ -157,13 +165,13 @@ const Comment = ({ item }) => {
             <div>
                 <h3 className="font-semibold text-gray-700 dark:text-white">
                     {authorDisplayName}{' '}
-                    <span className="text-gray-500 text-xs">{moment(publishedAt).fromNow()}</span>
+                    <span className="opacity-75 text-xs font-normal ml-1">{moment(publishedAt).fromNow()}</span>
                 </h3>
                 <p>{textOriginal}</p>
                 <div className="comment-action flex my-1 items-center">
-                    <img src={like} alt="" className="h-6" />
+                    <img src={like} alt="" className="sm:h-6 h-4" />
                     <span className="ml-2">{likeCount}</span>
-                    <img src={dislike} alt="" className="h-6 ml-2" />
+                    <img src={dislike} alt="" className="sm:h-6 h-4 ml-2" />
                 </div>
             </div>
         </div>

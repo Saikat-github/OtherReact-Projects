@@ -6,7 +6,8 @@ import ExploreMenu from "./explore-menu/ExploreMenu";
 import Footer from "./footer/Footer";
 import AppDownload from "./appdownload/AppDownload";
 import Login from "./loginpopup/Login";
+import ScrollToTop from "./scrollToTop/ScrollToTop";
 
 
-export {Navbar, Header, FoodDisplay, FoodItem, ExploreMenu, Footer, AppDownload, Login}
+export {Navbar, Header, FoodDisplay, FoodItem, ExploreMenu, Footer, AppDownload, Login, ScrollToTop}
 

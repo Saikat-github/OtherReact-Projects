@@ -17,21 +17,17 @@ const Navbar = () => {
     }
 
     return (
-        <div className='py-6 flex justify-between items-center bg-gray-100 px-[10%] font-Outfit sticky top-0 h-20 z-10 w-screen'>
+        <div className='py-10 flex justify-between items-center bg-white px-[10%] font-Outfit sticky top-0 z-10'>
+            <div>
             <Link to="/"><img src={assets.logo} alt="logo" className='h-6 sm:h-8 md:h-10' /></Link>
-            {/* <ul className='list-none flex gap-6 text-sky-900'>
-            <li onClick={() => setMenu("Home")} className={menu==="Home" ? "pb-2 border-b-2 cursor-pointer" : "cursor-pointer"}>Home</li>
-            <li onClick={() => setMenu("Menu")} className={menu==="Menu" ? "pb-2 border-b-2 cursor-pointer" : "cursor-pointer"}>Menu</li>
-            <li onClick={() => setMenu("Mobile-app")}  className={menu==="Mobile-app" ? "pb-2 border-b-2 cursor-pointer" : "cursor-pointer"}>Mobile-app</li>
-            <li onClick={() => setMenu("Contact")} className={menu==="Contact" ? "pb-2 border-b-2 cursor-pointer" : "cursor-pointer"}>Contact Us</li>
-        </ul> */}
-            <ul className='list-none lg:flex gap-6 text-sky-900 hidden'>
+            </div>
+            <div className='list-none lg:flex gap-6 text-slate-700 hidden'>
 
-                <Link to="/" className='pb-2 border-b-2 border-gray-100 hover:cursor-pointer hover:border-black'>Home</Link>
-                <a href='#explore-menu' className='pb-2 border-b-2 border-gray-100 hover:cursor-pointer hover:border-black'>Menu</a>
-                <a href='#app-download' className='pb-2 border-b-2 border-gray-100 hover:cursor-pointer hover:border-black'>Mobile-app</a>
-                <a href='#footer' className='pb-2 border-b-2 border-gray-100 hover:cursor-pointer hover:border-black'>Contact Us</a>
-            </ul>
+                <Link to="/" className='pb-2 border-b-2 border-white hover:cursor-pointer hover:border-slate-700'>Home</Link>
+                <a href='#explore-menu' className='pb-2 border-b-2 border-white hover:cursor-pointer hover:border-slate-700'>Menu</a>
+                <a href='#app-download' className='pb-2 border-b-2 border-white hover:cursor-pointer hover:border-slate-700'>Mobile-app</a>
+                <a href='#footer' className='pb-2 border-b-2 border-white hover:cursor-pointer hover:border-slate-700'>Contact Us</a>
+            </div>
             <div className='flex items-center gap-4 sm:gap-10'>
                 <img src={assets.search_icon} alt="" className='h-4 sm:h-8' />
                 <div>

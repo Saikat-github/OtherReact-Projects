@@ -45,7 +45,7 @@ const LoginPopup = () => {
 
 
     return (
-        <div className='login-popup absolute z-10 bg-[#00000090] h-screen w-screen flex justify-center items-center'>
+        <div className='login-popup absolute z-10 bg-[#00000090] h-screen w-full flex justify-center items-center'>
             <form onSubmit={onLogin} className='login-popup-container place-self-center w-80 text-[#808080] bg-white flex flex-col gap-6 px-8 py-6 rounded animate-[fadeIn_0.5s] text-sm'>
                 <div className="login-popup-title flex justify-between items-center text-black">
                     <h2 className='text-2xl font-bold'>{currentState}</h2>
